@@ -85,18 +85,16 @@ logit "INFO" "Checking If ${namespace} namespace exists"
 
 if kubectl get namespace "${namespace}" > /dev/null 2>&1
 then
-  logit "ERROR" "Namespace ${namespace} already exists, please select a unique name"
-  exit 1
+  logit "ERROR" "Namespace ${namespace} already exists, deploying JMeter inside"
+else
+  logit "INFO" "Creating Namespace: ${namespace}"
+  kubectl create namespace "${namespace}"
+  logit "INFO" "Namespace ${namespace} has been created"
 fi
 
-logit "INFO" "Creating Namespace: ${namespace}"
-kubectl create namespace "${namespace}"
 
-logit "INFO" "Namespace ${namespace} has been created"
 logit "INFO" "Creating Jmeter slave nodes"
-
 nodes=$(kubectl get nodes | grep -c -v "NAME")
-
 logit "INFO" "Number of worker nodes on this cluster is ${nodes}"
 
 #######################
